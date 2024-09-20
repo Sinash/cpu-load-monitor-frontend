@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: './src/index.tsx', // Entry point for your app
@@ -30,6 +31,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.html', // Template for the generated HTML file
     }),
+    new Dotenv(), // Use dotenv-webpack to load env variables
   ],
   devServer: {
     static: {
