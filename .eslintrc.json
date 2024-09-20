@@ -22,5 +22,5 @@
     "prettier/prettier": "error", // Enforce Prettier rules as ESLint errors
     "@typescript-eslint/no-explicit-any": "off"
   },
-  "ignorePatterns": ["dist/"]
+  "ignorePatterns": ["dist/", "webpack.config.js"]
 }
