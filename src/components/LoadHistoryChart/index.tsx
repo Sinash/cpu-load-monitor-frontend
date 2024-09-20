@@ -11,6 +11,7 @@ import {
 } from 'chart.js';
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
+import { fetchLoadHistory } from '../../services/cpuService'; // Import the service function
 
 // Register the necessary components from Chart.js
 ChartJS.register(
@@ -31,31 +32,30 @@ interface DataPoint {
 
 const LoadHistoryChart: React.FC = () => {
   const [chartData, setChartData] = useState<DataPoint[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  // Function to generate mock CPU load data for demo purposes
-  const generateCpuLoad = (): number => {
-    return Math.random() * 100; // Random CPU load between 0 and 100
+  // Function to fetch real CPU load data from the backend
+  const loadCpuHistoryData = async () => {
+    try {
+      const response = await fetchLoadHistory(); // Fetch data from the backend
+      const transformedData = response.map((data) => ({
+        timestamp: data.timestamp,
+        value: data.loadAverage,
+      }));
+      setChartData(transformedData);
+      setError(null); // Clear any previous errors
+    } catch (err) {
+      setError('Failed to fetch data from the backend');
+      console.error(err);
+    }
   };
 
   useEffect(() => {
-    const fetchData = () => {
-      const newPoint: DataPoint = {
-        timestamp: new Date().toISOString(),
-        value: generateCpuLoad(),
-      };
-
-      // Add new data point and retain only the last 10 minutes
-      setChartData((prevData) => {
-        const tenMinutesAgo = Date.now() - 10 * 60 * 1000; // 10 minutes ago
-        const updatedData = [...prevData, newPoint].filter(
-          (dp) => new Date(dp.timestamp).getTime() >= tenMinutesAgo
-        );
-        return updatedData;
-      });
-    };
+    // Fetch the initial data when the component mounts
+    loadCpuHistoryData();
 
     // Fetch data every 10 seconds
-    const interval = setInterval(fetchData, 10000);
+    const interval = setInterval(loadCpuHistoryData, 10000);
 
     // Clean up the interval on unmount
     return () => clearInterval(interval);
@@ -115,7 +115,7 @@ const LoadHistoryChart: React.FC = () => {
 
   return (
     <div>
-      <Line data={data} options={chartOptions} />
+      {error ? <p>{error}</p> : <Line data={data} options={chartOptions} />}
     </div>
   );
 };
