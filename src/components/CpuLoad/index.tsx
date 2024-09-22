@@ -27,6 +27,12 @@ const CpuLoad: React.FC = () => {
     return () => clearInterval(interval); // Clear interval on component unmount
   }, []);
 
+  const formatTimestamp = (timestamp: string | undefined | null) => {
+    if (!timestamp) return 'No timestamp available';
+    const date = new Date(timestamp);
+    return date.toLocaleString(); // Converts to a readable format
+  };
+
   if (loading) return <div>Loading CPU Load...</div>;
 
   return (
@@ -36,7 +42,7 @@ const CpuLoad: React.FC = () => {
         <div>
           <p>Load Average: {cpuLoadData.loadAverage}</p>
           <p>Status: {cpuLoadData.isHighLoad ? 'High Load' : 'Normal'}</p>
-          <p>Timestamp: {cpuLoadData.timestamp}</p>
+          <p>Timestamp: {formatTimestamp(cpuLoadData.timestamp)}</p>
         </div>
       )}
     </div>

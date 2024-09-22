@@ -20,7 +20,18 @@ const Alerts: React.FC = () => {
     };
 
     getAlerts();
+
+    // Polling every 10 seconds
+    const interval = setInterval(getAlerts, 10000);
+
+    return () => clearInterval(interval); // Clear interval on component unmount
   }, []);
+
+  const formatTimestamp = (timestamp: string | undefined | null) => {
+    if (!timestamp) return 'Ongoing';
+    const date = new Date(timestamp);
+    return date.toLocaleString(); // Converts to a readable format
+  };
 
   if (loading) return <div>Loading Alerts...</div>;
 
@@ -31,7 +42,8 @@ const Alerts: React.FC = () => {
       <ul>
         {alerts?.highLoadAlerts.map((alert, index) => (
           <li key={index}>
-            Start: {alert.startTime}, End: {alert.endTime || 'Ongoing'}
+            Start: {formatTimestamp(alert.startTime)}, End:{' '}
+            {formatTimestamp(alert.endTime)}
           </li>
         ))}
       </ul>
@@ -39,7 +51,8 @@ const Alerts: React.FC = () => {
       <ul>
         {alerts?.recoveryAlerts.map((alert, index) => (
           <li key={index}>
-            Start: {alert.startTime}, End: {alert.endTime || 'Ongoing'}
+            Start: {formatTimestamp(alert.startTime)}, End:{' '}
+            {formatTimestamp(alert.endTime)}
           </li>
         ))}
       </ul>

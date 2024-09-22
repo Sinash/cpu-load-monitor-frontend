@@ -9,22 +9,23 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
+import annotationPlugin, { AnnotationOptions } from 'chartjs-plugin-annotation';
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import { fetchLoadHistory } from '../../services/cpuService'; // Import the service function
+import { fetchAlerts, fetchLoadHistory } from '../../services/cpuService';
 
-// Register the necessary components from Chart.js
+// Register necessary Chart.js components and the annotation plugin
 ChartJS.register(
-  LineElement,
-  PointElement,
-  LinearScale,
   CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  annotationPlugin
 );
 
-// Define the data structure for the chart data
 interface DataPoint {
   timestamp: string;
   value: number;
@@ -32,36 +33,102 @@ interface DataPoint {
 
 const LoadHistoryChart: React.FC = () => {
   const [chartData, setChartData] = useState<DataPoint[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [alerts, setAlerts] = useState<{
+    highLoadAlerts: any[];
+    recoveryAlerts: any[];
+  }>({ highLoadAlerts: [], recoveryAlerts: [] });
 
-  // Function to fetch real CPU load data from the backend
-  const loadCpuHistoryData = async () => {
-    try {
-      const response = await fetchLoadHistory(); // Fetch data from the backend
-      const transformedData = response.map((data) => ({
-        timestamp: data.timestamp,
-        value: data.loadAverage,
-      }));
-      setChartData(transformedData);
-      setError(null); // Clear any previous errors
-    } catch (err) {
-      setError('Failed to fetch data from the backend');
-      console.error(err);
-    }
-  };
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch the initial data when the component mounts
-    loadCpuHistoryData();
+    const fetchData = async () => {
+      try {
+        const loadHistory = await fetchLoadHistory();
+        const alertData = await fetchAlerts();
 
-    // Fetch data every 10 seconds
-    const interval = setInterval(loadCpuHistoryData, 10000);
+        const transformedData = loadHistory.map((data) => ({
+          timestamp: data.timestamp,
+          value: data.loadAverage,
+        }));
 
-    // Clean up the interval on unmount
+        setChartData(transformedData);
+        setAlerts(alertData);
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+
+    // Polling every 10 seconds
+    const interval = setInterval(fetchData, 10000);
+
+    // Cleanup interval on component unmount
     return () => clearInterval(interval);
   }, []);
 
-  // Prepare the data for the chart
+  // Modify the annotation logic to use indices from chartData for xMin and xMax
+  const annotations: Partial<AnnotationOptions>[] = [];
+
+  // Add annotations for high load alerts
+  alerts.highLoadAlerts.forEach((alert, index) => {
+    // Find the index for the start and end of the high load alert
+    const startIndex = chartData.findIndex(
+      (dp) => new Date(dp.timestamp) >= new Date(alert.startTime)
+    );
+
+    const endIndex = alert.endTime
+      ? chartData.findIndex(
+          (dp) => new Date(dp.timestamp) >= new Date(alert.endTime)
+        )
+      : chartData.length - 1; // Ongoing alert, extend to the current last point
+
+    if (startIndex !== -1 && endIndex !== -1) {
+      annotations.push({
+        type: 'box',
+        xMin: startIndex,
+        xMax: endIndex,
+        backgroundColor: 'rgba(255, 0, 0, 0.25)', // Red for high load
+        borderColor: 'rgba(255, 0, 0, 1)',
+        borderWidth: 1,
+        label: {
+          content: `High Load ${index + 1}`,
+          enabled: true,
+          position: 'center',
+        },
+      });
+    }
+  });
+
+  // Add annotations for recovery alerts
+  alerts.recoveryAlerts.forEach((alert, index) => {
+    const startIndex = chartData.findIndex(
+      (dp) => new Date(dp.timestamp) >= new Date(alert.startTime)
+    );
+
+    const endIndex = chartData.findIndex(
+      (dp) => new Date(dp.timestamp) >= new Date(alert.endTime)
+    );
+
+    if (startIndex !== -1 && endIndex !== -1) {
+      annotations.push({
+        type: 'box',
+        xMin: startIndex,
+        xMax: endIndex,
+        backgroundColor: 'rgba(255, 165, 0, 0.25)', // Amber for recovery
+        borderColor: 'rgba(255, 165, 0, 1)',
+        borderWidth: 1,
+        label: {
+          content: `Recovery ${index + 1}`,
+          enabled: true,
+          position: 'center',
+        },
+      });
+    }
+  });
+
   const data = {
     labels: chartData.map((dp) => new Date(dp.timestamp).toLocaleTimeString()),
     datasets: [
@@ -70,12 +137,12 @@ const LoadHistoryChart: React.FC = () => {
         data: chartData.map((dp) => dp.value),
         borderColor: 'rgba(75, 192, 192, 1)',
         tension: 0.1,
+        fill: false,
       },
     ],
   };
 
-  // Define the chart options with explicit axis types and literal values
-  const chartOptions: ChartOptions<'line'> = {
+  const options: ChartOptions<'line'> = {
     responsive: true,
     plugins: {
       legend: {
@@ -83,8 +150,11 @@ const LoadHistoryChart: React.FC = () => {
       },
       title: {
         display: true,
-        text: 'CPU Load History (Last 10 Minutes)',
+        text: 'CPU Load History (with High Load and Recovery Alerts)',
       },
+      annotation: {
+        annotations,
+      } as any,
     },
     scales: {
       x: {
@@ -104,7 +174,7 @@ const LoadHistoryChart: React.FC = () => {
         ticks: {
           callback: function (tickValue: string | number) {
             if (typeof tickValue === 'number') {
-              return tickValue.toFixed(2); // Format the number to 2 decimal places
+              return tickValue.toFixed(2);
             }
             return tickValue;
           },
@@ -113,9 +183,13 @@ const LoadHistoryChart: React.FC = () => {
     },
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
-      {error ? <p>{error}</p> : <Line data={data} options={chartOptions} />}
+      <Line data={data} options={options} />
     </div>
   );
 };

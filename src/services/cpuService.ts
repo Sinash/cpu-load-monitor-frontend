@@ -42,7 +42,7 @@ export const fetchLoadHistory = async (): Promise<LoadData[]> => {
 // Fetch the high load and recovery alerts
 export const fetchAlerts = async (): Promise<AlertsResponse> => {
   const response = await axios.get<AlertsResponse>(
-    `${BASE_URL}/cpu-load-alert`
+    `${BASE_URL}/cpu-load-alerts`
   );
   return response.data;
 };
