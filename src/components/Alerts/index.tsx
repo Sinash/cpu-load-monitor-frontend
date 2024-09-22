@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { AlertsResponse, fetchAlerts } from '../../services/cpuService';
+import './scss/index.scss'; // Import alert-specific styles
 
 const Alerts: React.FC = () => {
   const [alerts, setAlerts] = useState<AlertsResponse | null>(null);
@@ -33,29 +34,35 @@ const Alerts: React.FC = () => {
     return date.toLocaleString(); // Converts to a readable format
   };
 
-  if (loading) return <div>Loading Alerts...</div>;
+  if (loading) return <div className="loading">Loading Alerts...</div>;
 
   return (
-    <div>
+    <div className="alerts">
       <h2>Alerts</h2>
-      <h3>High Load Alerts</h3>
-      <ul>
-        {alerts?.highLoadAlerts.map((alert, index) => (
-          <li key={index}>
-            Start: {formatTimestamp(alert.startTime)}, End:{' '}
-            {formatTimestamp(alert.endTime)}
-          </li>
-        ))}
-      </ul>
-      <h3>Recovery Alerts</h3>
-      <ul>
-        {alerts?.recoveryAlerts.map((alert, index) => (
-          <li key={index}>
-            Start: {formatTimestamp(alert.startTime)}, End:{' '}
-            {formatTimestamp(alert.endTime)}
-          </li>
-        ))}
-      </ul>
+      <div className="alert-container">
+        <div className="high-alerts">
+          <h3>High Load Alerts</h3>
+          <ul>
+            {alerts?.highLoadAlerts.map((alert, index) => (
+              <li key={index} className="high-alert-item">
+                Start: {formatTimestamp(alert.startTime)}, End:{' '}
+                {formatTimestamp(alert.endTime)}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="recovery-alerts">
+          <h3>Recovery Alerts</h3>
+          <ul>
+            {alerts?.recoveryAlerts.map((alert, index) => (
+              <li key={index} className="recovery-alert-item">
+                Start: {formatTimestamp(alert.startTime)}, End:{' '}
+                {formatTimestamp(alert.endTime)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };

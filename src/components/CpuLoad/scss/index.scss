@@ -1,0 +1,40 @@
+// src/components/CpuLoad.scss
+
+.cpu-load {
+  display: flex;
+  flex-direction: column; /* Ensure the content is stacked vertically */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  h2 {
+    margin-bottom: 10px;
+  }
+
+  .cpu-load-info {
+    p {
+      font-size: 16px;
+      color: #333;
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 6px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: inline-block;
+    }
+
+    strong {
+      font-weight: bold;
+    }
+
+    .high-load {
+      color: red;
+      font-weight: bold;
+    }
+
+    .normal-load {
+      color: green;
+      font-weight: bold;
+    }
+  }
+}

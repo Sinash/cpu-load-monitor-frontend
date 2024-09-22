@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { CpuLoadResponse, fetchCpuLoad } from '../../services/cpuService';
+import './scss/index.scss'; // Import the SCSS file for styling
 
 const CpuLoad: React.FC = () => {
   const [cpuLoadData, setCpuLoadData] = useState<CpuLoadResponse | null>(null);
@@ -21,7 +22,6 @@ const CpuLoad: React.FC = () => {
 
     getCpuLoadData();
 
-    // Polling every 10 seconds
     const interval = setInterval(getCpuLoadData, 10000);
 
     return () => clearInterval(interval); // Clear interval on component unmount
@@ -30,19 +30,27 @@ const CpuLoad: React.FC = () => {
   const formatTimestamp = (timestamp: string | undefined | null) => {
     if (!timestamp) return 'No timestamp available';
     const date = new Date(timestamp);
-    return date.toLocaleString(); // Converts to a readable format
+    return date.toLocaleString();
   };
 
   if (loading) return <div>Loading CPU Load...</div>;
 
   return (
-    <div>
+    <div className="cpu-load">
       <h2>Current CPU Load</h2>
       {cpuLoadData && (
-        <div>
-          <p>Load Average: {cpuLoadData.loadAverage}</p>
-          <p>Status: {cpuLoadData.isHighLoad ? 'High Load' : 'Normal'}</p>
-          <p>Timestamp: {formatTimestamp(cpuLoadData.timestamp)}</p>
+        <div className="cpu-load-info">
+          <p>
+            <strong>Load Average:</strong> {cpuLoadData.loadAverage} |{' '}
+            <strong>Status:</strong>{' '}
+            <span
+              className={cpuLoadData.isHighLoad ? 'high-load' : 'normal-load'}
+            >
+              {cpuLoadData.isHighLoad ? 'High Load' : 'Normal'}
+            </span>{' '}
+            | <strong>Timestamp:</strong>{' '}
+            {formatTimestamp(cpuLoadData.timestamp)}
+          </p>
         </div>
       )}
     </div>

@@ -1,5 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+// src/index.tsx
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import './scss/index.scss'; // Import your SCSS file
+
+const container = document.getElementById('root');
+if (container) {
+  container.classList.add('container'); // Add class to the root element
+  const root = createRoot(container); // Create a root
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}

@@ -1,0 +1,60 @@
+@import '../../../scss/variables'; // Import the variables file
+
+/* Flexbox to display High Load and Recovery Alerts side by side */
+.alert-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px; /* Space between the two columns */
+  margin-bottom: 20px;
+}
+
+/* Responsive behavior for smaller screens */
+@media (max-width: 768px) {
+  .alert-container {
+    flex-direction: column; /* Stack the alerts vertically on small screens */
+  }
+}
+
+.high-alerts,
+.recovery-alerts {
+  flex: 1; /* Equal width for both columns */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: $box-shadow;
+}
+
+/* Remove background from the alert sections */
+.high-alerts,
+.recovery-alerts {
+  background-color: transparent;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow to list items */
+    font-weight: bold;
+    color: #4d5156;
+  }
+
+  /* High Load Alerts - Red background */
+  .high-alert-item {
+    background-color: rgba(255, 0, 0, 0.25); /* Red for high load alerts */
+  }
+
+  /* Recovery Alerts - Amber background */
+  .recovery-alert-item {
+    background-color: rgba(255, 165, 0, 0.25); /* Amber for recovery alerts */
+  }
+
+  /* Hover effect */
+  li:hover {
+    background-color: adjust-color($list-item-bg, $lightness: -5%);
+    transition: background-color 0.3s ease;
+  }
+}

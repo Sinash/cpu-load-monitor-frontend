@@ -25,6 +25,14 @@ module.exports = {
         test: /\.css$/, // Handle CSS files
         use: ['style-loader', 'css-loader'],
       },
+      {
+        test: /\.scss$/, // Handle SCSS files
+        use: [
+          'style-loader', // Injects styles into DOM
+          'css-loader', // Turns CSS into JS
+          'sass-loader', // Compiles SCSS to CSS
+        ],
+      },
     ],
   },
   plugins: [
