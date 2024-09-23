@@ -147,16 +147,26 @@ git commit -m "feat: update the alert logic to set the threshold to 2 mins"
 
 ## 📸 Screenshots
 
-![Screenshot 2024-09-23 at 5 37 56 PM](https://github.com/user-attachments/assets/4b44fe1b-548c-4961-a614-a9f8e19addb7)
+<div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; text-align: center;">
 
+  <div>
+    <img src="https://github.com/user-attachments/assets/4b44fe1b-548c-4961-a614-a9f8e19addb7" alt="Screenshot 1" width="300"  style="border: 1px solid #ddd; border-radius: 4px; padding: 5px;" />
+    <p><strong>Overview of the CPU Load Monitor</strong></p>
+  </div>
 
-![Screenshot 2024-09-23 at 5 40 09 PM](https://github.com/user-attachments/assets/963a8121-c2b2-46fc-997b-b647d9c34f2b)
+  <div>
+    <img src="https://github.com/user-attachments/assets/963a8121-c2b2-46fc-997b-b647d9c34f2b" alt="Screenshot 2" width="300"  style="border: 1px solid #ddd; border-radius: 4px; padding: 5px;" />
+    <p><strong>Real-time CPU Load Display</strong></p>
+  </div>
 
+  <div>
+    <img src="https://github.com/user-attachments/assets/1d5d8f88-5a4c-4c8b-a631-eeb910af5eb5" alt="Screenshot 3" width="300" style="border: 1px solid #ddd; border-radius: 4px; padding: 5px;" />
+    <p><strong>Load History and Analytics</strong></p>
+  </div>
 
-![Screenshot 2024-09-23 at 5 43 41 PM](https://github.com/user-attachments/assets/1d5d8f88-5a4c-4c8b-a631-eeb910af5eb5)
+  <div>
+    <img src="https://github.com/user-attachments/assets/1981b80a-4fe0-42dd-aaff-9ae56f8949d8" alt="Screenshot 4" width="300"  style="border: 1px solid #ddd; border-radius: 4px; padding: 5px;" />
+    <p><strong>Alert Management Interface</strong></p>
+  </div>
 
-
-![Screenshot 2024-09-23 at 5 48 41 PM](https://github.com/user-attachments/assets/1981b80a-4fe0-42dd-aaff-9ae56f8949d8)
-
-
----
+## </div>
