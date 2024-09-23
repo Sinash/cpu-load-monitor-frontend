@@ -1,5 +1,3 @@
-// src/components/CpuLoad.tsx
-
 import React, { useEffect, useState } from 'react';
 import { CpuLoadResponse, fetchCpuLoad } from '../../services/cpuService';
 import './scss/index.scss'; // Import the SCSS file for styling
