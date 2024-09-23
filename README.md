@@ -44,12 +44,15 @@ Ensure you have the following installed:
 - **Node.js**: Version 14.x or higher
 - **npm**: Installed with Node.js (ensure it's updated using `npm install -g npm`)
 - **nvm**: Recommended to manage Node.js versions
+- **backend-service**: Make sure the backend service is up and running on a different port (preferably `3001`) than this application.
 
-To verify Node.js is installed:
+-- To verify Node.js is installed:
 
 ```bash
 node -v
 ```
+
+-- Find the setup instruction for the back-end service [here](https://github.com/Sinash/cpu-load-monitor-backend?tab=readme-ov-file#-cpu-load-monitor---backend-service)
 
 ### 🛠️ Setup Instructions
 
