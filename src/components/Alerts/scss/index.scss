@@ -8,6 +8,18 @@
   margin-bottom: 20px;
 }
 
+/* Center the No Alerts message */
+.no-alerts {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 10vh; /* Takes full viewport height for vertical centering */
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #555;
+  text-align: center;
+}
+
 /* Responsive behavior for smaller screens */
 @media (max-width: 768px) {
   .alert-container {

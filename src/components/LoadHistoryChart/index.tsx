@@ -13,6 +13,7 @@ import annotationPlugin, { AnnotationOptions } from 'chartjs-plugin-annotation';
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { fetchAlerts, fetchLoadHistory } from '../../services/cpuService';
+import './scss/index.scss'; // Import your CSS file
 
 // Register necessary Chart.js components and the annotation plugin
 ChartJS.register(
@@ -69,12 +70,10 @@ const LoadHistoryChart: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Modify the annotation logic to use indices from chartData for xMin and xMax
   const annotations: Partial<AnnotationOptions>[] = [];
 
   // Add annotations for high load alerts
   alerts.highLoadAlerts.forEach((alert, index) => {
-    // Find the index for the start and end of the high load alert
     const startIndex = chartData.findIndex(
       (dp) => new Date(dp.timestamp) >= new Date(alert.startTime)
     );
@@ -83,7 +82,7 @@ const LoadHistoryChart: React.FC = () => {
       ? chartData.findIndex(
           (dp) => new Date(dp.timestamp) >= new Date(alert.endTime)
         )
-      : chartData.length - 1; // Ongoing alert, extend to the current last point
+      : chartData.length - 1;
 
     if (startIndex !== -1 && endIndex !== -1) {
       annotations.push({
@@ -144,6 +143,7 @@ const LoadHistoryChart: React.FC = () => {
 
   const options: ChartOptions<'line'> = {
     responsive: true,
+    maintainAspectRatio: false, // Allow the chart to resize freely
     plugins: {
       legend: {
         position: 'top',
@@ -188,8 +188,10 @@ const LoadHistoryChart: React.FC = () => {
   }
 
   return (
-    <div>
-      <Line data={data} options={options} />
+    <div className="chart-container">
+      <div className="chart-wrapper">
+        <Line data={data} options={options} />
+      </div>
     </div>
   );
 };
