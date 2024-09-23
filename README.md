@@ -43,8 +43,13 @@ Ensure you have the following installed:
 
 - **Node.js**: Version 14.x or higher
 - **npm**: Installed with Node.js (ensure it's updated using `npm install -g npm`)
+- **nvm**: Recommended to manage Node.js versions
 
----
+To verify Node.js is installed:
+
+```bash
+node -v
+```
 
 ### 🛠️ Setup Instructions
 
@@ -61,21 +66,51 @@ Ensure you have the following installed:
    npm install
    ```
 
-3. **Run the development server:**
+3. **Set up environment variables:**
 
-   For development:
+   Create a `.env` file in the root directory:
+
+   ```bash
+   # .env
+   PORT=3000
+   BACKEND_URL="/api/v1"
+   REACT_APP_API_USERNAME="cpu-user"
+   REACT_APP_API_PASSWORD="cpu-password"
+   ```
+
+4. **Run the service:**
+
+   For development with auto-restart:
+
+   ```bash
+   npm run dev
+   ```
+
+   For production:
 
    ```bash
    npm start
    ```
 
-   This will run the app in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
 ---
 
 ## 💻 Development Guide
 
-### 1️⃣ **Code Formatting**
+### 1️⃣ **Linting**
+
+Run ESLint to check for code issues:
+
+```bash
+npm run lint
+```
+
+To auto-fix issues:
+
+```bash
+npm run lint:fix
+```
+
+### 2️⃣ **Code Formatting**
 
 Run Prettier to format your code:
 
@@ -83,7 +118,7 @@ Run Prettier to format your code:
 npm run format
 ```
 
-### 2️⃣ **Testing**
+### 3️⃣ **Testing**
 
 Run all tests using Jest:
 
@@ -102,15 +137,11 @@ npm test
 Example commit message:
 
 ```bash
-git commit -m "feat: add CPU load visualization chart"
+git commit -m "feat: update the alert logic to set the threshold to 2 mins"
 ```
 
 ---
 
 ## 📸 Screenshots
 
-![CPU Load Monitor Frontend](https://github.com/user-attachments/assets/frontend-screenshot)
-
 ---
-
-Feel free to add any additional sections such as contributing, acknowledgments, or license details if necessary!
