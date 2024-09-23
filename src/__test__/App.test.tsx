@@ -1,16 +1,16 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import App from '../App'; // Adjust the import path as necessary
+import App from '../app'; // Adjust the import path as necessary
 
 // Mock child components
-jest.mock('../components/CpuLoad/index', () => () => (
+jest.mock('../components/cpuLoad/index', () => () => (
   <div>Mocked CpuLoad Component</div>
 ));
-jest.mock('../components/LoadHistoryChart/index', () => () => (
+jest.mock('../components/loadHistoryChart/index', () => () => (
   <div>Mocked LoadHistoryChart Component</div>
 ));
-jest.mock('../components/Alerts/index', () => () => (
+jest.mock('../components/alerts/index', () => () => (
   <div>Mocked Alerts Component</div>
 ));
 

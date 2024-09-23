@@ -1,7 +1,7 @@
 import React from 'react';
-import Alerts from './components/Alerts/index';
-import CpuLoad from './components/CpuLoad/index';
-import LoadHistoryChart from './components/LoadHistoryChart/index';
+import Alerts from './components/alerts/index';
+import CpuLoad from './components/cpuLoad/index';
+import LoadHistoryChart from './components/loadHistoryChart/index';
 
 const App: React.FC = () => {
   return (
