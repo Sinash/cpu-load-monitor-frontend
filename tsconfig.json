@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES2015",
+    "lib": ["dom", "es2015"],
     "module": "esnext",
     "jsx": "react",
     "strict": true,
     "esModuleInterop": true, // <-- Make sure this is true
     "skipLibCheck": true, // <-- Optional: Skips type checking for declaration files
     "moduleResolution": "node", // <-- This should resolve node_modules correctly
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": ["jest", "@testing-library/jest-dom", "node"]
   },
   "include": ["src/**/*"]
 }

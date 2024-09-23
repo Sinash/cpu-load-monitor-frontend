@@ -31,7 +31,7 @@ const password = process.env.REACT_APP_API_PASSWORD;
 const encodedCredentials = btoa(`${username}:${password}`);
 
 // Axios instance with Basic Auth header
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: {
     Authorization: `Basic ${encodedCredentials}`,

@@ -40,25 +40,31 @@ const LoadHistoryChart: React.FC = () => {
   }>({ highLoadAlerts: [], recoveryAlerts: [] });
 
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const loadHistory = await fetchLoadHistory();
-        const alertData = await fetchAlerts();
-
         const transformedData = loadHistory.map((data) => ({
           timestamp: data.timestamp,
           value: data.loadAverage,
         }));
-
         setChartData(transformedData);
+      } catch (error) {
+        console.error('Error fetching load history: ', error);
+        setError(true);
+      }
+
+      try {
+        const alertData = await fetchAlerts();
         setAlerts(alertData);
       } catch (error) {
-        console.error('Error fetching data: ', error);
-      } finally {
-        setLoading(false);
+        console.error('Error fetching alerts: ', error);
+        setError(true);
       }
+
+      setLoading(false);
     };
 
     fetchData();
@@ -69,6 +75,14 @@ const LoadHistoryChart: React.FC = () => {
     // Cleanup interval on component unmount
     return () => clearInterval(interval);
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error || chartData.length === 0) {
+    return <div>Error loading data</div>; // Return an error message or fallback UI if there's an error
+  }
 
   const annotations: Partial<AnnotationOptions>[] = [];
 
@@ -182,10 +196,6 @@ const LoadHistoryChart: React.FC = () => {
       },
     },
   };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="chart-container">

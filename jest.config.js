@@ -1,10 +1,13 @@
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
-  moduleFileExtensions: ['ts', 'js'],
-  testMatch: ['**/tests/**/*.test.ts'],
+  testEnvironment: 'jest-environment-jsdom',
+  moduleFileExtensions: ['ts', 'tsx', 'js'],
+  testMatch: ['**/__test__/**/*.test.ts', '**/__test__/**/*.test.tsx'],
   collectCoverage: true, // Enable coverage collection
-  collectCoverageFrom: ['src/**/*.{ts,js}'], // Specify which files to collect coverage from
+  collectCoverageFrom: ['src/**/*.{ts,tsx,js}'], // Specify which files to collect coverage from
   coverageDirectory: 'coverage', // Directory to output coverage reports
   coverageReporters: ['text', 'lcov'], // Specify coverage reporters
+  moduleNameMapper: {
+    '\\.(css|scss)$': '<rootDir>/src/__mocks__/styleMock.js', // Mock CSS/SCSS files
+  },
 };
