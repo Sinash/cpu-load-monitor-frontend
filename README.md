@@ -147,4 +147,16 @@ git commit -m "feat: update the alert logic to set the threshold to 2 mins"
 
 ## 📸 Screenshots
 
+![Screenshot 2024-09-23 at 5 37 56 PM](https://github.com/user-attachments/assets/4b44fe1b-548c-4961-a614-a9f8e19addb7)
+
+
+![Screenshot 2024-09-23 at 5 40 09 PM](https://github.com/user-attachments/assets/963a8121-c2b2-46fc-997b-b647d9c34f2b)
+
+
+![Screenshot 2024-09-23 at 5 43 41 PM](https://github.com/user-attachments/assets/1d5d8f88-5a4c-4c8b-a631-eeb910af5eb5)
+
+
+![Screenshot 2024-09-23 at 5 48 41 PM](https://github.com/user-attachments/assets/1981b80a-4fe0-42dd-aaff-9ae56f8949d8)
+
+
 ---
