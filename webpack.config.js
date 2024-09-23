@@ -49,7 +49,7 @@ module.exports = {
     port: 3000, // Port to run the dev server
     proxy: [
       {
-        context: ['/api'], // Matches endpoints starting with /api
+        context: ['/api/v1'], // Matches endpoints starting with /api
         target: 'http://localhost:3001', // Proxy API calls to the backend server
         changeOrigin: true, // Needed for virtual hosted sites
         secure: false, // Disable SSL for development
