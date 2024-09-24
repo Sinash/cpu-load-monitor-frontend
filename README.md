@@ -174,3 +174,33 @@ git commit -m "feat: update the alert logic to set the threshold to 2 mins"
   </div>
 
 ## </div>
+
+## Troubleshooting
+
+### API Not Responding / Error Fetching Data
+
+Issue: The frontend is unable to fetch data from the backend API, and you see network errors in the browser console.
+
+**Solution:**
+
+- Ensure the backend service is up and running.
+- Check by navigating to the API URL (e.g., http://localhost:3001) or using tools like curl or Postman.
+- Ensure API and frontend run on different ports. The frontend could be on port 3000 and the backend on 3001.
+- Update the .env file with the correct API URL and port.
+- In webpack.config.js, where the proxy is set, you will need to explicitly update the backend service URL for proxying to avoid CORS.
+
+Issue: Port Already in Use
+
+**Solution**
+
+- Identify the process using the port. On macOS/Linux, run:
+
+```bahs
+lsof -i :3000
+```
+
+- Kill the process using the following command:
+
+```bash
+kill -9 <PID>
+```
