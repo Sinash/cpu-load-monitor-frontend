@@ -177,6 +177,14 @@ git commit -m "feat: update the alert logic to set the threshold to 2 mins"
 
 ## 🛠️ Troubleshooting
 
+Run the below command for generic issues
+
+```bahs
+npm run clean
+```
+
+---
+
 ### API Not Responding / Error Fetching Data
 
 Issue: The frontend is unable to fetch data from the backend API, and you see network errors in the browser console.
@@ -204,3 +212,13 @@ lsof -i :3000
 ```bash
 kill -9 <PID>
 ```
+
+---
+
+## POC Implementation Details
+
+https://github.com/Sinash/cpu-load-monitor-backend/wiki/CPU-Load-Monitoring-Web-Application-%E2%80%90-POC
+
+## Production Consideration
+
+https://github.com/Sinash/cpu-load-monitor-backend/wiki/Production-Consideration
