@@ -5,7 +5,7 @@
   "main": "src/server.ts",
   "scripts": {
     "clean": "rm -rf package-lock.json && rm -rf node_modules && rm -rf dist && npm i",
-    "start": "webpack serve --config webpack.config.js",
+    "dev": "npm run build && webpack serve --config webpack.config.js",
     "build": "webpack --config webpack.config.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
