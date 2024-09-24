@@ -175,7 +175,7 @@ git commit -m "feat: update the alert logic to set the threshold to 2 mins"
 
 ## </div>
 
-## Troubleshooting
+## 🛠️ Troubleshooting
 
 ### API Not Responding / Error Fetching Data
 
