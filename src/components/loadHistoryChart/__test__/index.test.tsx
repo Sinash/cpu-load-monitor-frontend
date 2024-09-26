@@ -1,17 +1,10 @@
 import '@testing-library/jest-dom';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { fetchAlerts, fetchLoadHistory } from '../../../services/cpuService';
 import LoadHistoryChart from '../index';
 
-// Mock the service functions
-jest.mock('../../../services/cpuService', () => ({
-  fetchLoadHistory: jest.fn(),
-  fetchAlerts: jest.fn(),
-}));
-
 // Mock the Line component from react-chartjs-2 and capture its props
-const mockLine = jest.fn(); // Mock function to capture props
+const mockLine = jest.fn();
 
 jest.mock('react-chartjs-2', () => ({
   Line: (props: any) => {
@@ -20,60 +13,41 @@ jest.mock('react-chartjs-2', () => ({
   },
 }));
 
-describe('LoadHistoryChart', () => {
-  const originalError = console.error;
+beforeAll(() => {
+  // Mock getContext to prevent canvas errors
+  HTMLCanvasElement.prototype.getContext = jest.fn();
+});
 
-  beforeEach(() => {
-    console.error = jest.fn();
-  });
+describe('LoadHistoryChart component', () => {
+  it('should display the chart with the provided load history and alerts', () => {
+    const mockHistory = [
+      {
+        loadAverage: 0.3,
+        timestamp: '2024-09-23T08:00:00Z',
+      },
+      {
+        loadAverage: 0.5,
+        timestamp: '2024-09-23T08:01:00Z',
+      },
+    ];
 
-  afterEach(() => {
-    jest.clearAllMocks();
-    console.error = originalError;
-  });
+    const mockAlerts = {
+      highLoadAlerts: [
+        { startTime: '2024-09-23T08:00:00Z', endTime: '2024-09-23T08:01:00Z' },
+      ],
+      recoveryAlerts: [],
+    };
 
-  it('should handle errors from fetch functions gracefully', async () => {
-    // Mock the fetch functions to throw an error
-    (fetchLoadHistory as jest.Mock).mockRejectedValueOnce(
-      new Error('Network error')
-    );
-    (fetchAlerts as jest.Mock).mockRejectedValueOnce(
-      new Error('Network error')
-    );
+    // Render the component and pass the mock data as props
+    render(<LoadHistoryChart history={mockHistory} alerts={mockAlerts} />);
 
-    // Use act to wait for async updates
-    await act(async () => {
-      render(<LoadHistoryChart />);
-    });
+    // Extract the props passed to the Line component
+    const lineProps = mockLine.mock.calls[0][0];
 
-    // Log the mock calls to check if the mock functions are being called
-    console.log(
-      'fetchLoadHistory calls:',
-      (fetchLoadHistory as jest.Mock).mock.calls
-    );
-    console.log('fetchAlerts calls:', (fetchAlerts as jest.Mock).mock.calls);
+    // Focused assertions:
+    expect(lineProps.data.labels).toEqual(['4:00:00 AM', '4:01:00 AM']);
 
-    // Ensure the error doesn't break rendering
-    await waitFor(() => {
-      // Check if fetchLoadHistory and fetchAlerts were called
-      expect(fetchLoadHistory).toHaveBeenCalledTimes(1);
-      expect(fetchAlerts).toHaveBeenCalledTimes(1);
-
-      // The chart should not be rendered because the service calls failed
-      expect(mockLine).not.toHaveBeenCalled(); // The chart should not render due to errors
-
-      // Assert that the error message was logged
-      expect(console.error).toHaveBeenCalledWith(
-        'Error fetching load history: ',
-        expect.any(Error)
-      );
-      expect(console.error).toHaveBeenCalledWith(
-        'Error fetching alerts: ',
-        expect.any(Error)
-      );
-    });
-
-    // Check that the loading message is no longer present after error handling
-    expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    // Verify that the title of the chart is present in the DOM
+    expect(screen.getByText('Mocked Line Chart')).toBeInTheDocument();
   });
 });

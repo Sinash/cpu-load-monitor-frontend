@@ -10,4 +10,5 @@ module.exports = {
   moduleNameMapper: {
     '\\.(css|scss)$': '<rootDir>/src/__mocks__/styleMock.js', // Mock CSS/SCSS files
   },
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'], // Adjust the path if necessary
 };

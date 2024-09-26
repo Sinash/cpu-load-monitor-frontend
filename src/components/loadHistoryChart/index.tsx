@@ -1,3 +1,5 @@
+// components/loadHistoryChart/index.tsx
+
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -10,12 +12,11 @@ import {
   Tooltip,
 } from 'chart.js';
 import annotationPlugin, { AnnotationOptions } from 'chartjs-plugin-annotation';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Line } from 'react-chartjs-2';
-import { fetchAlerts, fetchLoadHistory } from '../../services/cpuService';
+import { AlertsResponse, LoadData } from '../../services/cpuService';
 import './scss/index.scss'; // Import your CSS file
 
-// Register necessary Chart.js components and the annotation plugin
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -27,76 +28,30 @@ ChartJS.register(
   annotationPlugin
 );
 
-interface DataPoint {
-  timestamp: string;
-  value: number;
+interface LoadHistoryChartProps {
+  history: LoadData[];
+  alerts: AlertsResponse;
 }
 
-const LoadHistoryChart: React.FC = () => {
-  const [chartData, setChartData] = useState<DataPoint[]>([]);
-  const [alerts, setAlerts] = useState<{
-    highLoadAlerts: any[];
-    recoveryAlerts: any[];
-  }>({ highLoadAlerts: [], recoveryAlerts: [] });
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const loadHistory = await fetchLoadHistory();
-        const transformedData = loadHistory.map((data) => ({
-          timestamp: data.timestamp,
-          value: data.loadAverage,
-        }));
-        setChartData(transformedData);
-      } catch (error) {
-        console.error('Error fetching load history: ', error);
-        setError(true);
-      }
-
-      try {
-        const alertData = await fetchAlerts();
-        setAlerts(alertData);
-      } catch (error) {
-        console.error('Error fetching alerts: ', error);
-        setError(true);
-      }
-
-      setLoading(false);
-    };
-
-    fetchData();
-
-    // Polling every 10 seconds
-    const interval = setInterval(fetchData, 10000);
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(interval);
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error || chartData.length === 0) {
-    return <div>Error loading data</div>; // Return an error message or fallback UI if there's an error
-  }
-
+const LoadHistoryChart: React.FC<LoadHistoryChartProps> = ({
+  history,
+  alerts,
+}) => {
   const annotations: Partial<AnnotationOptions>[] = [];
 
   // Add annotations for high load alerts
   alerts.highLoadAlerts.forEach((alert, index) => {
-    const startIndex = chartData.findIndex(
-      (dp) => new Date(dp.timestamp) >= new Date(alert.startTime)
+    const startIndex = history.findIndex(
+      (dp) =>
+        alert.startTime && new Date(dp.timestamp) >= new Date(alert.startTime)
     );
 
     const endIndex = alert.endTime
-      ? chartData.findIndex(
-          (dp) => new Date(dp.timestamp) >= new Date(alert.endTime)
+      ? history.findIndex(
+          (dp) =>
+            alert.endTime && new Date(dp.timestamp) >= new Date(alert.endTime)
         )
-      : chartData.length - 1;
+      : history.length - 1;
 
     if (startIndex !== -1 && endIndex !== -1) {
       annotations.push({
@@ -117,13 +72,17 @@ const LoadHistoryChart: React.FC = () => {
 
   // Add annotations for recovery alerts
   alerts.recoveryAlerts.forEach((alert, index) => {
-    const startIndex = chartData.findIndex(
-      (dp) => new Date(dp.timestamp) >= new Date(alert.startTime)
+    const startIndex = history.findIndex(
+      (dp) =>
+        alert.startTime && new Date(dp.timestamp) >= new Date(alert.startTime)
     );
 
-    const endIndex = chartData.findIndex(
-      (dp) => new Date(dp.timestamp) >= new Date(alert.endTime)
-    );
+    const endIndex = alert.endTime
+      ? history.findIndex(
+          (dp) =>
+            alert.endTime && new Date(dp.timestamp) >= new Date(alert.endTime)
+        )
+      : history.length - 1;
 
     if (startIndex !== -1 && endIndex !== -1) {
       annotations.push({
@@ -142,12 +101,24 @@ const LoadHistoryChart: React.FC = () => {
     }
   });
 
+  // components/loadHistoryChart/index.tsx
+  const formatTime = (timestamp: string) => {
+    const date = new Date(timestamp);
+    return new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hour12: true,
+      timeZone: 'America/New_York', // Explicitly set the time zone
+    }).format(date);
+  };
+
   const data = {
-    labels: chartData.map((dp) => new Date(dp.timestamp).toLocaleTimeString()),
+    labels: history.map((dp) => formatTime(dp.timestamp)), // Use consistent formatting
     datasets: [
       {
         label: 'CPU Load Average (Normalized)',
-        data: chartData.map((dp) => dp.value),
+        data: history.map((dp) => dp.loadAverage),
         borderColor: 'rgba(75, 192, 192, 1)',
         tension: 0.1,
         fill: false,

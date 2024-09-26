@@ -1,18 +1,9 @@
 import '@testing-library/jest-dom';
-import { act, render, screen, waitFor, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import React from 'react';
-import { fetchAlerts } from '../../../services/cpuService';
 import Alerts from '../index'; // Path to your Alerts component
 
-jest.mock('../../../services/cpuService', () => ({
-  fetchAlerts: jest.fn(),
-}));
-
 describe('Alerts component', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('should display high load and recovery alerts', async () => {
     const mockAlerts = {
       highLoadAlerts: [
@@ -23,18 +14,12 @@ describe('Alerts component', () => {
       ],
     };
 
-    (fetchAlerts as jest.Mock).mockResolvedValueOnce(mockAlerts);
-
-    // Use `act` to handle the rendering and asynchronous state update
-    await act(async () => {
-      render(<Alerts />);
-    });
+    // Render the component and pass the mockAlerts as a prop
+    render(<Alerts alerts={mockAlerts} />);
 
     // Wait for the component to render the alerts
-    await waitFor(() => {
-      expect(screen.getByText('High Load Alerts')).toBeInTheDocument();
-      expect(screen.getByText('Recovery Alerts')).toBeInTheDocument();
-    });
+    expect(screen.getByText('High Load Alerts')).toBeInTheDocument();
+    expect(screen.getByText('Recovery Alerts')).toBeInTheDocument();
 
     // Assert high load alerts
     const highAlertsContainer =

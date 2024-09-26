@@ -1,56 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { CpuLoadResponse, fetchCpuLoad } from '../../services/cpuService';
-import './scss/index.scss'; // Import the SCSS file for styling
+// components/cpuLoad/index.tsx
 
-const CpuLoad: React.FC = () => {
-  const [cpuLoadData, setCpuLoadData] = useState<CpuLoadResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+import React from 'react';
+import { CpuLoadResponse } from '../../services/cpuService';
+import './scss/index.scss';
 
-  useEffect(() => {
-    const getCpuLoadData = async () => {
-      try {
-        const data = await fetchCpuLoad();
-        setCpuLoadData(data);
-      } catch (error) {
-        console.error('Failed to fetch CPU load', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+interface CpuLoadProps {
+  currentLoad: CpuLoadResponse | null; // Allow null values
+}
 
-    getCpuLoadData();
+const CpuLoad: React.FC<CpuLoadProps> = ({ currentLoad }) => {
+  if (!currentLoad) {
+    return <div className="cpu-load">No CPU Load Data Available</div>; // Handle null case
+  }
 
-    const interval = setInterval(getCpuLoadData, 10000);
-
-    return () => clearInterval(interval); // Clear interval on component unmount
-  }, []);
-
-  const formatTimestamp = (timestamp: string | undefined | null) => {
-    if (!timestamp) return 'No timestamp available';
+  const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
     return date.toLocaleString();
   };
 
-  if (loading) return <div>Loading CPU Load...</div>;
-
   return (
     <div className="cpu-load">
       <h2>Current CPU Load</h2>
-      {cpuLoadData && (
-        <div className="cpu-load-info">
-          <p>
-            <strong>Load Average:</strong> {cpuLoadData.loadAverage} |{' '}
-            <strong>Status:</strong>{' '}
-            <span
-              className={cpuLoadData.isHighLoad ? 'high-load' : 'normal-load'}
-            >
-              {cpuLoadData.isHighLoad ? 'High Load' : 'Normal'}
-            </span>{' '}
-            | <strong>Timestamp:</strong>{' '}
-            {formatTimestamp(cpuLoadData.timestamp)}
-          </p>
-        </div>
-      )}
+      <div className="cpu-load-info">
+        <p>
+          <strong>Load Average:</strong> {currentLoad.loadAverage} |{' '}
+          <strong>Status:</strong>{' '}
+          <span
+            className={currentLoad.isHighLoad ? 'high-load' : 'normal-load'}
+          >
+            {currentLoad.isHighLoad ? 'High Load' : 'Normal'}
+          </span>{' '}
+          | <strong>Timestamp:</strong> {formatTimestamp(currentLoad.timestamp)}
+        </p>
+      </div>
     </div>
   );
 };
