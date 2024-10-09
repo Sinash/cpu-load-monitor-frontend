@@ -1,5 +1,6 @@
 {
   "env": {
+    "browser": true, // Add this to enable browser globals
     "node": true,
     "es2021": true,
     "jest": true

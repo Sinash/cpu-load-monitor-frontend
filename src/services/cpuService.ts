@@ -1,3 +1,5 @@
+// services/cpuService.ts
+
 import axios from 'axios';
 import { config } from '../config';
 
@@ -23,6 +25,12 @@ export interface AlertsResponse {
   recoveryAlerts: Alert[];
 }
 
+export interface CpuSummaryResponse {
+  currentLoad: CpuLoadResponse;
+  history: LoadData[];
+  alerts: AlertsResponse;
+}
+
 const BASE_URL = config.BACKEND_URL;
 
 // Basic Auth credentials (ideally fetched from environment variables)
@@ -39,20 +47,8 @@ export const axiosInstance = axios.create({
   },
 });
 
-// Fetch the current CPU load data
-export const fetchCpuLoad = async (): Promise<CpuLoadResponse> => {
-  const response = await axiosInstance.get<CpuLoadResponse>('/cpu-load');
-  return response.data;
-};
-
-// Fetch the CPU load history
-export const fetchLoadHistory = async (): Promise<LoadData[]> => {
-  const response = await axiosInstance.get<LoadData[]>('/cpu-load-history');
-  return response.data;
-};
-
-// Fetch the high load and recovery alerts
-export const fetchAlerts = async (): Promise<AlertsResponse> => {
-  const response = await axiosInstance.get<AlertsResponse>('/cpu-load-alerts');
+// Fetch the CPU summary from the API
+export const fetchCpuSummary = async (): Promise<CpuSummaryResponse> => {
+  const response = await axiosInstance.get<CpuSummaryResponse>('/cpu-summary');
   return response.data;
 };
